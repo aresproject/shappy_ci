@@ -2,6 +2,14 @@ h2 {
     color: blue;
 }
 
+.white {
+    color: white;
+}
+
+.dark-bg {
+    background-color: black;
+}
+
 .product_item {
     padding: 10px;
     margin: 10px 0;
