@@ -18,3 +18,7 @@ h2 {
 .product_item img {
     width: 100%;
 }
+
+img.user-photo {
+    width: 100%;
+}
