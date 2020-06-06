@@ -11,7 +11,7 @@
                 <h4>$<?= $item['price']?></h4>
                 <span><?= $item['ratings'] ?></span>
                 <p><?= $item['description']?></p>
-                <p>qty</p>
+                <p>Qty</p>
                 <p><a class="btn btn-success" href="#">Add To Cart</a></p>
                 
             </div>
