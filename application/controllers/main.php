@@ -39,6 +39,7 @@ Class Main extends CI_Controller {
         $page_group = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
 
         $view_data['products'] = $this->products_model->fetch_products($pconfig["per_page"], $page_group, null);
+        $view_data['filters'] = $this->products_model->get_categories();
         $view_data['pager'] = $this->pagination->create_links();
         
         //$view_data['mainpage'] = "shop";

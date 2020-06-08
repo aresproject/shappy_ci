@@ -57,6 +57,12 @@ Class Products_model extends CI_Model {
         return $query->result_array();
     }
 
+    public function get_categories(){
+        $sql = "SELECT * FROM product_categories";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     public function get_related_products($pid) {
         
         $sql_tags = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
@@ -70,17 +76,16 @@ Class Products_model extends CI_Model {
         $product['tags'] = $query->result_array();
 
         foreach($product['tags'] as $tags) {
-            $rel_tags['tag'] = $tags['product_tag_id'];
+            $rel_tags[] = $tags['product_tag_id'];
         }
-        
-        $bb = array('1', '2', '3');
 
         $related_products = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
                 LEFT JOIN products AS b ON b.id = a.product_id
                 LEFT JOIN product_tags AS c on c.id = a.product_tag_id";
 
-        $related_products .= " WHERE a.product_tag_id IN (" . implode(",", $bb) . ")";
-        $related_products .= " LIMIT 3";
+        $related_products .= " WHERE a.product_tag_id IN (" . implode(",", $rel_tags) . ")";
+        $related_products .= " AND b.id != {$pid}";
+        $related_products .= " LIMIT 5";
 
         $query = $this->db->query($related_products);
         $x2 = $this->db->last_query();
