@@ -24,6 +24,15 @@
         <div class="row">
             <div class="col-md-4 col-sm-12">
                 <h3>Related Products</h3>
+                <?php foreach($related_products as $prod): ?>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <img class="p150" src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo">
+                            <h4><?= $prod['product_name'] ?></h4>
+                            <p><?= $prod['ratings'] ?></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
             <div class="col-md-8 col-sm-12">
                 <h2>Customer Reviews</h2>
@@ -36,6 +45,7 @@
                             <span><?= $review['rating'] ?></span>
                             <h3><?= $review['review_title']?></h3>
                             <p><?= $review['review_description'] ?></p>
+                            <p style="text-align: right;"><b>-<?= $review['name'] ?></b></p>
                         </div>
                     </div>
                 <?php endforeach; ?>

@@ -50,9 +50,47 @@ Class Products_model extends CI_Model {
     }
 
     public function get_reviews($pid) {
-        $sql = "SELECT * FROM reviews WHERE product_id = {$pid}";
+        $sql = "SELECT concat(b.first_name, ' ', b.last_name) AS name, a.* FROM reviews AS a
+                LEFT JOIN users AS b ON b.id = a.user_id 
+                WHERE product_id = {$pid}";
         $query = $this->db->query($sql);
         return $query->result_array();
+    }
+
+    public function get_related_products($pid) {
+        
+        $sql_tags = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
+                LEFT JOIN products AS b ON b.id = a.product_id
+                LEFT JOIN product_tags AS c on c.id = a.product_tag_id";
+
+        $sql_tags .= " WHERE b.id = {$pid}";
+        
+        $query = $this->db->query($sql_tags);
+        $x = $this->db->last_query();
+        $product['tags'] = $query->result_array();
+
+        foreach($product['tags'] as $tags) {
+            $rel_tags['tag'] = $tags['product_tag_id'];
+        }
+        
+        $bb = array('1', '2', '3');
+
+        $related_products = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
+                LEFT JOIN products AS b ON b.id = a.product_id
+                LEFT JOIN product_tags AS c on c.id = a.product_tag_id";
+
+        $related_products .= " WHERE a.product_tag_id IN (" . implode(",", $bb) . ")";
+        $related_products .= " LIMIT 3";
+
+        $query = $this->db->query($related_products);
+        $x2 = $this->db->last_query();
+        return $query->result_array();
+
+        
+    }
+
+    public function get_product_tags(){
+
     }
 
     public function add_to_cart(){

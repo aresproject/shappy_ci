@@ -28,6 +28,7 @@ class Products extends CI_Controller {
 
         $this->pagination->initialize($xconfig);
         $page_grouper = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
+        
         $_SESSION['search_item'] = $this->input->post('product_search');
        
         $view_data['products'] = $this->products_model->search_products($xconfig['per_page'], $page_grouper, $_SESSION['search_item']);
@@ -45,6 +46,7 @@ class Products extends CI_Controller {
     public function view($pid) {
         $view_data['product'] = $this->products_model->get_product($pid);
         $view_data['reviews'] = $this->products_model->get_reviews($pid);
+        $view_data['related_products'] = $this->products_model->get_related_products($pid);
         
         foreach($view_data['product'] as $item) {
             $view_formats['page_title'] = $item['product_name'];
@@ -54,7 +56,6 @@ class Products extends CI_Controller {
                        ->view('features/product_search')
                        ->view('content/product_view', $view_data)
                        ->view('footer/footer');
-        
     }
 
 
