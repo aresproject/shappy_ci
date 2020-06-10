@@ -6,3 +6,5 @@ h2 {color: blue;}
 img.user-photo {width: 100%;}
 .p150 {width: 150px;}
 .row {margin: 20px 0; }
+.form-group * { margin: 5px 0; }
+article {min-height: 512px;}

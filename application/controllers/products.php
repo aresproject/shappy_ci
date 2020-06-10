@@ -58,6 +58,15 @@ class Products extends CI_Controller {
                        ->view('footer/footer');
     }
 
+    public function cart_add(){
+        if($this->products_model->add_to_cart()){
+            $this->session->set_flashdata('notice', "Item was added to cart");
+        } else {
+            $this->session->set_flashdata('notice', "<span class='warning'>Adding Item to Cart Failed... Pls Contact Seller</span>");
+        }
+        redirect($_SERVER['HTTP_REFERER']);      
+    }
+
 
 
 }

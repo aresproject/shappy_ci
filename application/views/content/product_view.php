@@ -1,55 +1,80 @@
 <div class="article">
 <div class="container">
-        <div class="row">
-            <?php foreach($product as $item): ?>
-            <div class="col-sm-12 col-md-4">
-                <img src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo">
-            </div>
-            <div class="col-sm-12 col-md-8">
-                
-                <h1><?= $item['product_name']?></h1>
-                <h4>$<?= $item['price']?></h4>
-                <span><?= $item['ratings'] ?></span>
-                <p><?= $item['description']?></p>
-                <p>Qty</p>
-                <p><a class="btn btn-success" href="#">Add To Cart</a></p>
-                
-            </div>
+    <?php
+        if(isset($_SESSION['notice'])) {
+            echo "<div class='alert alert-warning' role='alert'>";
+            echo $_SESSION['notice'];
+            echo "</div>";
+        }
+    ?>
+    <div class="row">
+        <?php foreach($product as $item): ?>
+        <div class="col-sm-12 col-md-4">
+            <img src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo">
+        </div>
+        <div class="col-sm-12 col-md-8">
+            
+            <h1><?= $item['product_name']?></h1>
+            <h4>$<?= $item['price']?></h4>
+            <span><?= $item['ratings'] ?></span>
+            <p><?= $item['description']?></p>
+            <?php echo form_open('/products/cart_add'); ?>
+                <div class="form-row">
+                    <div class="col-md-4">
+                        <?php 
+                            $_SESSION['current_product_id'] = $item['id'];
+                            $_SESSION['current_product_price'] = $item['price'];
+                        ?>
+                        <div class="form-group">
+                            <label for="qty">Quantity: </label>
+                            <select class="form-control" name="qty">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <button class="btn btn-success" type="submit">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>    
+            </form>
+        </div>
+        <?php endforeach; ?>
+    </div>
+        
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-sm-12">
+            <h3>Related Products</h3>
+            <?php foreach($related_products as $prod): ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <img class="p150" src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo">
+                        <h4><?= $prod['product_name'] ?></h4>
+                        <p><?= $prod['ratings'] ?></p>
+                    </div>
+                </div>
             <?php endforeach; ?>
         </div>
-        
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4 col-sm-12">
-                <h3>Related Products</h3>
-                <?php foreach($related_products as $prod): ?>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <img class="p150" src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo">
-                            <h4><?= $prod['product_name'] ?></h4>
-                            <p><?= $prod['ratings'] ?></p>
-                        </div>
+        <div class="col-md-8 col-sm-12">
+            <h2>Customer Reviews</h2>
+            <?php foreach($reviews as $review): ?>
+                <div class="row">
+                    <div class="col-md-2">
+                        <img class="user-photo" src="<?= base_url()?>/assets/images/users/user-placeholder.png" alt="">
                     </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="col-md-8 col-sm-12">
-                <h2>Customer Reviews</h2>
-                <?php foreach($reviews as $review): ?>
-                    <div class="row">
-                        <div class="col-md-2">
-                            <img class="user-photo" src="<?= base_url()?>/assets/images/users/user-placeholder.png" alt="">
-                        </div>
-                        <div class="col-md-10">
-                            <span><?= $review['rating'] ?></span>
-                            <h3><?= $review['review_title']?></h3>
-                            <p><?= $review['review_description'] ?></p>
-                            <p style="text-align: right;"><b>-<?= $review['name'] ?></b></p>
-                        </div>
+                    <div class="col-md-10">
+                        <span><?= $review['rating'] ?></span>
+                        <h3><?= $review['review_title']?></h3>
+                        <p><?= $review['review_description'] ?></p>
+                        <p style="text-align: right;"><b>-<?= $review['name'] ?></b></p>
                     </div>
-                <?php endforeach; ?>
-            </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
+</div>
 </div>

@@ -12,7 +12,14 @@ Class Main extends CI_Controller {
     }
 
     public function login(){
-        $this->load->view('header/header')->view('login')->view('footer/footer');
+        $this->load->model('users_model');
+        if($this->users_model->valid_login()) {
+            redirect('/main/shop');
+        } else {
+            $this->session->set_flashdata('notice', "Invalid email and password");
+            redirect('/main');
+        }
+        
     }
 
     public function shop() {
@@ -54,6 +61,7 @@ Class Main extends CI_Controller {
 
     public function logout() {
         //destroy session routine
+        session_destroy();
         redirect('/main');
     }
 
