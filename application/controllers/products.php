@@ -37,6 +37,7 @@ class Products extends CI_Controller {
                     ->view('header/main_nav')
                     ->view('features/product_search')
                     ->view('search', $view_data)
+                    ->view('footer/admin_helper')
                     ->view('footer/footer');
             //unset($_POST['product_search']);
         
@@ -55,6 +56,7 @@ class Products extends CI_Controller {
                        ->view('header/main_nav')
                        ->view('features/product_search')
                        ->view('content/product_view', $view_data)
+                       ->view('footer/admin_helper')
                        ->view('footer/footer');
     }
 
@@ -65,6 +67,17 @@ class Products extends CI_Controller {
             $this->session->set_flashdata('notice', "<span class='warning'>Adding Item to Cart Failed... Pls Contact Seller</span>");
         }
         redirect($_SERVER['HTTP_REFERER']);      
+    }
+
+    public function view_cart() {
+        $view_formats['page_title'] = "VIEW CART";
+        $view_data['cart_items'] = $this->products_model->get_cart();
+        $this->load->view('header/header',$view_formats)
+                       ->view('header/main_nav')
+                       ->view('features/product_search')
+                       ->view('content/cart_items', $view_data)
+                       ->view('footer/admin_helper')
+                       ->view('footer/footer');
     }
 
 

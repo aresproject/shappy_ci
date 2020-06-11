@@ -23,6 +23,24 @@ Class Users_model extends CI_Model {
 
     }
 
+    public function has_active_cart(){
+        $sql = "SELECT c.*, a.id FROM users AS a 
+                LEFT JOIN (SELECT b1.user_id, b2.order_id, b2.status_name, b2.is_pending FROM orders AS b1 
+                LEFT JOIN order_status AS b2 ON b2.order_id = b1.id 
+                WHERE STRCMP(b2.status_name, 'ON CART') = 0
+                AND b2.is_pending = 1) AS c ON c.user_id = a.id
+                WHERE a.id = {$_SESSION['logged_userid']}";
+
+        $query = $this->db->query($sql);
+        $row = $query->row();
+        if($query->num_rows() > 0 ) {
+            $this->session->set_userdata('active_cart', $row->order_id);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function get_user_data($pid){
         $sql = "SELECT * FROM users WHERE ID = {$pid}";
         $query = $this->db->query($sql);

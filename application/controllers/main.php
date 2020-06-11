@@ -8,12 +8,16 @@ Class Main extends CI_Controller {
 
     public function index(){
         $view_data['page_title'] = "Login/Register";
-        $this->load->view('header/header', $view_data)->view('login')->view('footer/footer');
+        $this->load->view('header/header', $view_data)
+                   ->view('login')
+                   ->view('footer/admin_helper')
+                   ->view('footer/footer');
     }
 
     public function login(){
         $this->load->model('users_model');
         if($this->users_model->valid_login()) {
+            $this->users_model->has_active_cart();
             redirect('/main/shop');
         } else {
             $this->session->set_flashdata('notice', "Invalid email and password");
@@ -55,13 +59,14 @@ Class Main extends CI_Controller {
                    ->view('header/main_nav')
                    ->view('features/product_search')
                    ->view('shop', $view_data)
+                   ->view('footer/admin_helper')
                    ->view('footer/footer');
                    
     }
 
     public function logout() {
         //destroy session routine
-        session_destroy();
+        $this->session->sess_destroy();
         redirect('/main');
     }
 

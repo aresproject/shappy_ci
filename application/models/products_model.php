@@ -1,6 +1,7 @@
 <?Php
 
 Class Products_model extends CI_Model {
+    
     public function __construct() {
         parent::__construct();
         $this->load->database();
@@ -72,24 +73,31 @@ Class Products_model extends CI_Model {
         $sql_tags .= " WHERE b.id = {$pid}";
         
         $query = $this->db->query($sql_tags);
-        $x = $this->db->last_query();
-        $product['tags'] = $query->result_array();
+        //$x = $this->db->last_query();
+        
+        if($query->num_rows() > 0) {
+            $product['tags'] = $query->result_array();
+            foreach($product['tags'] as $tags) {
+                $rel_tags[] = $tags['product_tag_id'];
+            } 
 
-        foreach($product['tags'] as $tags) {
-            $rel_tags[] = $tags['product_tag_id'];
-        } 
-
-        $related_products = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
+            $related_products = "SELECT b.id, b.product_name, b.ratings, b.price, a.product_tag_id, c.tag_name FROM tagged_products as A
                 LEFT JOIN products AS b ON b.id = a.product_id
                 LEFT JOIN product_tags AS c on c.id = a.product_tag_id";
 
-        $related_products .= " WHERE a.product_tag_id IN (" . implode(",", $rel_tags) . ")";
-        $related_products .= " AND b.id != {$pid}";
-        $related_products .= " LIMIT 5";
+            $related_products .= " WHERE a.product_tag_id IN (" . implode(",", $rel_tags) . ")";
+            $related_products .= " AND b.id != {$pid}";
+            $related_products .= " LIMIT 5";
 
-        $query = $this->db->query($related_products);
-        $x2 = $this->db->last_query();
-        return $query->result_array();
+            $query = $this->db->query($related_products);
+            $x2 = $this->db->last_query();
+            return $query->result_array();
+        } else {
+            return false;
+        }
+
+
+        
 
         
     }
@@ -99,14 +107,6 @@ Class Products_model extends CI_Model {
     } */
 
     public function add_to_cart(){
-        
-       /*  
-        1. If customer does not have active cart then create new order -> then insert to order_item
-        2. Otherwise open active cart (order that has 'On Cart' status) -> then insert to order_item
-        3. User must have the order id as "active cart" -> set to 0 when order is "On Process"
-        
-        */
-
         $pid = $_SESSION['current_product_id'];
         $uid = $_SESSION['logged_userid'];
         $qty = $this->input->post('qty');
@@ -118,46 +118,61 @@ Class Products_model extends CI_Model {
             'total_tax_price' => 0.00,
             'created_at' => date("Y-m-d H:i:s")
         );
-        //CREATE AN ORDER Record
-        if($this->db->insert('orders', $orders)) {
-            $order_id = $this->db->insert_id();
-            $line_price = $_SESSION['current_product_price'] * $qty;
-            $order_details = array(
-                'order_id' => $order_id,
-                'product_id' => $_SESSION['current_product_id'],
-                'item_price' => $_SESSION['current_product_price'],
-                'line_price' => $line_price,
-                'quantity' => $qty
-            );
-            if($this->db->insert('order_items', $order_details)) {
-                unset($_SESSION['current_product_id']);
-                unset($_SESSION['current_product_price']);
-                $_SESSION['notice'] =  "Item was added to cart";
-            } else {
-                return false;
-            }
 
-            //SET THE ORDER to "on cart" status
+        $this->db->trans_start();
+        if(!isset($_SESSION['active_cart'])) { //Check first there is no open cart otherwise create a new one as ON CART
+            $this->db->insert('orders', $orders); 
+            $x = $this->db->last_query();
+            $_SESSION['active_cart'] = $this->db->insert_id();
+
             $order_status = array(
-                'order_id' => $order_id,
+                'order_id' => $_SESSION['active_cart'],
                 'status_name' => "ON CART",
+                'is_pending' => 1, 
                 'created_at' => date("Y-m-d H:i:s")
             );
 
-            //Tag the user with the order id to indicate an Active "On Cart" order
-            $update_user = "UPDATE users SET active_cart = {$order_id}";
-            $_SESSION['active_cart'] = $this->db->insert_id();
-        } else {
+            $this->db->insert('order_status', $order_status);
+            $x = $this->db->last_query();
+
+        }
+
+        $line_price = $_SESSION['current_product_price'] * $qty;
+        $order_details = array(
+            'order_id' => $_SESSION['active_cart'],
+            'product_id' => $_SESSION['current_product_id'],
+            'item_price' => $_SESSION['current_product_price'],
+            'line_price' => ($_SESSION['current_product_price'] * $qty),
+            'quantity' => $qty,
+            'created_at' => date("Y-m-d H:i:s")
+        );  
+        $this->db->insert('order_items', $order_details); //include the product in the cart (Order id with ON CART status)
+        $x = $this->db->last_query();
+       
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE){
+            $this->session->set_flashdata('notice', "Transaction cannot be processed");
             return false;
-        }        
+        } else {
+            return true;
+        }
 
     }
 
-    public function view_cart() {
-        $sql = "SELECT * FROM order_items AS a
-                LEFT JOIN orders AS b ON b.id = a.order_id
-                LEFT JOIN order_status AS c ON b.id = c.order_id 
-                WHERE c.status_name = 'ON CART'";
+    public function get_cart() {
+        $sql = "SELECT a.*, e.product_name FROM order_items AS a
+                RIGHT JOIN (SELECT b.id, c.status_name, c.is_pending FROM orders AS b
+                LEFT JOIN order_status AS c ON c.order_id = b.id
+                WHERE STRCMP(c.status_name, 'ON CART') = 0
+                AND c.order_id = {$_SESSION['active_cart']}
+                AND c.is_pending = 1
+                AND b.user_id = {$_SESSION['logged_userid']}) AS d ON d.id = a.order_id
+                LEFT JOIN products AS e ON e.id = a.product_id";
+
+        $query = $this->db->query($sql);
+        $x = $this->db->last_query();
+        return $query->result_array();
         
     } 
 
