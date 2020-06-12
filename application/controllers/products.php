@@ -9,11 +9,14 @@ class Products extends CI_Controller {
     }
 
     public function search(){  
-        //implement pagination here
+        if(!is_null($this->input->post('product_search'))) {
+            $_SESSION['search_item'] = $this->input->post('product_search');
+        }
+        $query = $this->db->get_where('products', "product_name LIKE '{$_SESSION['search_item']}%'");
         $view_formats['page_title'] = "Search Results";
-
         $xconfig['base_url'] = base_url('/products/search/');
-        $xconfig['total_rows'] = $this->db->count_all("products");
+        //$xconfig['total_rows'] = $this->db->count_all("products");
+        $xconfig['total_rows'] = $query->num_rows();
         $xconfig['per_page'] = 8;
         $xconfig['uri_segment'] = 3;
         $xconfig['first_link'] = false;
@@ -28,8 +31,6 @@ class Products extends CI_Controller {
 
         $this->pagination->initialize($xconfig);
         $page_grouper = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
-        
-        $_SESSION['search_item'] = $this->input->post('product_search');
        
         $view_data['products'] = $this->products_model->search_products($xconfig['per_page'], $page_grouper, $_SESSION['search_item']);
         $view_data['pager_x'] = $this->pagination->create_links();

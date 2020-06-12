@@ -41,10 +41,24 @@ Class Users_model extends CI_Model {
         }
     }
 
-    public function get_user_data($pid){
-        $sql = "SELECT * FROM users WHERE ID = {$pid}";
+    public function get_user_data($table, $args){
+        /* $sql = "SELECT * FROM {$table}} WHERE ID = {$pid}";
         $query = $this->db->query($sql);
+        return $query->row_array(); */
+
+        $query = $this->db->get_where($table, $args);
         return $query->row_array();
+    }
+
+    public function get_user_address($pid){
+        $sql = "SELECT * FROM user_addresses AS a
+                LEFT JOIN countries AS b ON a.address_country_id = b.id
+                LEFT JOIN states AS c ON a.address_state_id = c.id
+                LEFT JOIN cities AS d ON a.address_city_id = d.id
+                WHERE a.user_id = {$pid} and a.is_active = 1";
+
+        $query = $this->db->query($sql);
+        return $query->row_array(); 
     }
 
 }
