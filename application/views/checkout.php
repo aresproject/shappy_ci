@@ -77,8 +77,8 @@
                 <div class="card-body">
                     <form action="/products/checkout">
                         <input type="text" placeholder="Credit Card #">
-                        <input type="text" placeholder="Exp">
-                        <input type="number" placeholder="cvc">
+                        <input type="date" placeholder="Exp" style="width: 28%;">
+                        <input type="number" placeholder="cvc" style="width: 13%;">
                         <input type="hidden" name="checkout" value="credit">
                         <button class="btn btn-primary" type="submit">Place Order</button>
                      </form>
@@ -97,8 +97,8 @@
             <div class="card-body">
                     <form action="/products/checkout">
                         <input type="text" placeholder="Debit Card #">
-                        <input type="text" placeholder="Exp">
-                        <input type="number" placeholder="cvc">
+                        <input type="date" placeholder="Exp" style="width: 28%;">
+                        <input type="number" placeholder="cvc" style="width: 13%;">
                         <input type="hidden" name="checkout" value="debit">
                         <button class="btn btn-primary" type="submit">Place Order</button>
                      </form>

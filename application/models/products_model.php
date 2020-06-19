@@ -174,22 +174,21 @@ Class Products_model extends CI_Model {
     }
 
     public function checkout($pay_mode){
-        /* $orders = array(
+        $orders = array(
             'payment_mode' => $pay_mode,
             'total_price' => $_SESSION['total_price'],
             'total_tax_price' => 0.00,
             'is_active' => 1
         );
 
-        $order_status = array (
-            'order_id' => $_SESSION['active_cart'],
+        $order_status_old = array (
             'is_pending' => 0,
             'updated_at' => date("Y-m-d H:i:s")
         );
 
         $order_status_new = array (
             'order_id' => $_SESSION['active_cart'],
-            'status_name' => 'on_process',
+            'status_name' => 'ON PROCESS',
             'is_pending' => 1,
             'created_at' => date("Y-m-d H:i:s")
         );
@@ -197,13 +196,24 @@ Class Products_model extends CI_Model {
         $this->db->trans_start();
             $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
             $x = $this->db->last_query();
-            $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            
+            //Tag the Order ID as Finishing The 'On Cart' Status
+            $this->db->update('order_status', $orders_status_old, array('order_id' => 
+            $_SESSION['active_cart'], 'status_name' => 'ON CART'));
             $x = $this->db->last_query();
-            $this->db->insert('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            
+            //Tag the Order ID as having the On Processing Status
+            $this->db->insert('orders_status', $orders_status_new);
             $x = $this->db->last_query();
         $this->db->trans_complete();
 
-        unset($_SESSION['active_cart']); */
+        if ($this->db->trans_status() === FALSE){
+            $this->session->set_flashdata('notice', "Transaction cannot be processed");
+        } else {
+            unset($_SESSION['active_cart']);
+        }
+
+       
     }
 
 }

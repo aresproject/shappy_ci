@@ -82,24 +82,30 @@ class Products extends CI_Controller {
     }
 
     public function checkout() {
+        //First Check if the user selected a payment method from checkout Page
         switch($this->input->get('checkout')) {
             case 'credit':
                 $pay_mode = "credit_card";
+                $this->products_model->checkout($pay_mode);
                 redirect('/main/shop');
                 break;
             case 'debit':
                 $pay_mode = "debit_card";
+                $this->products_model->checkout($pay_mode);
                 redirect('/main/shop');
                 break;
             case 'bank':
                 $pay_mode = "bank";
+                $this->products_model->checkout($pay_mode);
                 redirect('/main/shop');
                 break;
             case 'cod':
                 $pay_mode = "cod";
+                $this->products_model->checkout($pay_mode);
                 redirect('/main/shop');
                 break;
             default:
+                //Otherwise Display the details of an Order on Cart
                 $view_formats['page_title'] = "Checkout";
                 $view_data['cart_items'] = $this->products_model->get_cart();
             
