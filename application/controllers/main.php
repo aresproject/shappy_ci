@@ -4,6 +4,8 @@ Class Main extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
+
+        header('Cache-Control: no-cache');
     }
 
     public function index(){
@@ -20,7 +22,7 @@ Class Main extends CI_Controller {
             $this->users_model->has_active_cart();
             redirect('/main/shop');
         } else {
-            $this->session->set_flashdata('notice', "Invalid email and password");
+            $this->session->set_flashdata('login_notice', "Invalid email and password");
             redirect('/main');
         }
         
@@ -62,6 +64,28 @@ Class Main extends CI_Controller {
                    ->view('footer/admin_helper')
                    ->view('footer/footer');
                    
+    }
+
+    public function sign_up(){
+        $this->form_validation->set_rules('fname', 'First Name', 'required|min_length[2]');
+        $this->form_validation->set_rules('lname', 'Last Name', 'required|min_length[2]');
+        $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[5]');
+        $this->form_validation->set_rules('cpassword', 'Password Confirmation', 'trim|required|matches[password]');
+        $this->form_validation->set_rules('phone', 'Phone number', 'required');
+        $this->form_validation->set_rules('email', 'email', 'trim|required|valid_email');
+
+        if($this->form_validation->run()){
+            if($this->user_model->create_user()) {
+                redirect('/main/');
+            }
+        } else {
+            $this->session->set_flashdata('notice', validation_errors());
+            $view_data['page_title'] = "Login/Register";
+            $this->load->view('header/header', $view_data)
+                   ->view('login')
+                   ->view('footer/admin_helper')
+                   ->view('footer/footer');
+        }
     }
 
     public function logout() {

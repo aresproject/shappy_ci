@@ -8,3 +8,5 @@ img.user-photo {width: 100%;}
 .row {margin: 20px 0; }
 .form-group * { margin: 5px 0; }
 article {min-height: 512px;}
+td.num {text-align: right;}
+img.cart-img {width: 25% !important; margin-right: 25px !important;}

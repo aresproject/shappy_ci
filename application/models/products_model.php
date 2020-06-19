@@ -102,10 +102,6 @@ Class Products_model extends CI_Model {
         
     }
 
-  /*   public function get_product_tags(){
-
-    } */
-
     public function add_to_cart(){
         $pid = $_SESSION['current_product_id'];
         $uid = $_SESSION['logged_userid'];
@@ -116,6 +112,7 @@ Class Products_model extends CI_Model {
             'payment_mode' => "",
             'total_price' => 0.00,
             'total_tax_price' => 0.00,
+            'is_active' => 1,
             'created_at' => date("Y-m-d H:i:s")
         );
 
@@ -174,7 +171,40 @@ Class Products_model extends CI_Model {
         $x = $this->db->last_query();
         return $query->result_array();
         
-    } 
+    }
+
+    public function checkout($pay_mode){
+        /* $orders = array(
+            'payment_mode' => $pay_mode,
+            'total_price' => $_SESSION['total_price'],
+            'total_tax_price' => 0.00,
+            'is_active' => 1
+        );
+
+        $order_status = array (
+            'order_id' => $_SESSION['active_cart'],
+            'is_pending' => 0,
+            'updated_at' => date("Y-m-d H:i:s")
+        );
+
+        $order_status_new = array (
+            'order_id' => $_SESSION['active_cart'],
+            'status_name' => 'on_process',
+            'is_pending' => 1,
+            'created_at' => date("Y-m-d H:i:s")
+        );
+        
+        $this->db->trans_start();
+            $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            $x = $this->db->last_query();
+            $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            $x = $this->db->last_query();
+            $this->db->insert('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            $x = $this->db->last_query();
+        $this->db->trans_complete();
+
+        unset($_SESSION['active_cart']); */
+    }
 
 }
 

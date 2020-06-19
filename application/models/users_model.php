@@ -41,13 +41,35 @@ Class Users_model extends CI_Model {
         }
     }
 
-    public function get_user_data($table, $args){
-        /* $sql = "SELECT * FROM {$table}} WHERE ID = {$pid}";
-        $query = $this->db->query($sql);
-        return $query->row_array(); */
-
-        $query = $this->db->get_where($table, $args);
+    public function get_user_data($args){
+        $query = $this->db->get_where('users', $args);
         return $query->row_array();
+    }
+
+    public function create_user(){
+        $query = $this->db->get_where('users', array('email' => $this->input->post('email')));
+        if($query->num_rows() > 0 ){
+            $this->session->set_flashdata('notice', "{$this->input->post('email')} is already associated with a registered user... Please use different email");
+            return false;
+        } else {
+            $users= array(
+                'first_name' => $this->input->post('fname'),
+                'last_name' => $this->input->post('lname'),
+                'password' => $this->input->post('password'),
+                'email' => $this->input->post('email'),
+                'phone' => $this->input->post('phone'),
+                'created_at' => date("Y-m-d H:i:s")
+            );
+            if($this->db->insert('users', $users)) {
+                $x = $this->db->last_query();
+                $this->session->set_flashdata('notice', 'User registered... ');
+                return true;
+            } else {
+                $x = $this->db->last_query();
+                $this->session->set_flashdata('notice', 'Please try again later');
+                return false;
+            }
+        }
     }
 
     public function get_user_address($pid){
@@ -55,7 +77,9 @@ Class Users_model extends CI_Model {
                 LEFT JOIN countries AS b ON a.address_country_id = b.id
                 LEFT JOIN states AS c ON a.address_state_id = c.id
                 LEFT JOIN cities AS d ON a.address_city_id = d.id
-                WHERE a.user_id = {$pid} and a.is_active = 1";
+                WHERE a.user_id = {$pid}";
+                
+                //and a.is_active = 1";
 
         $query = $this->db->query($sql);
         return $query->row_array(); 

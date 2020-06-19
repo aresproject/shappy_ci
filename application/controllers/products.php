@@ -81,6 +81,44 @@ class Products extends CI_Controller {
                        ->view('footer/footer');
     }
 
+    public function checkout() {
+        switch($this->input->get('checkout')) {
+            case 'credit':
+                $pay_mode = "credit_card";
+                redirect('/main/shop');
+                break;
+            case 'debit':
+                $pay_mode = "debit_card";
+                redirect('/main/shop');
+                break;
+            case 'bank':
+                $pay_mode = "bank";
+                redirect('/main/shop');
+                break;
+            case 'cod':
+                $pay_mode = "cod";
+                redirect('/main/shop');
+                break;
+            default:
+                $view_formats['page_title'] = "Checkout";
+                $view_data['cart_items'] = $this->products_model->get_cart();
+            
+                $this->load->model('users_model');
+                $view_data['user_data'] = $this->users_model->get_user_data("id = {$_SESSION['logged_userid']}");
+                $view_data['address_data'] = $this->users_model->get_user_address($_SESSION['logged_userid']);
+            
+                $this->load->view('header/header',$view_formats)
+                            ->view('header/main_nav')
+                            ->view('checkout', $view_data)
+                            ->view('footer/admin_helper')
+                            ->view('footer/footer');
+            break;
+        }
+        
+        
+        
+    }
+
 
 
 }

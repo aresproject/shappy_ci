@@ -5,39 +5,50 @@
             <thead>
                 <tr>
                 <th scope="col">#</th>
-                <th scope="col">Product Name</th>
+                <th scope="col">Item Description</th>
                 <th scope="col">Price</th>
                 <th scope="col">Qty</th>
-                <th scope="col">Price</th>
+                <th scope="col">Cost</th>
                 </tr>
             </thead>
             <tbody>
             <?php $line = 0; $cost_price = 0;?>
+           
             <?php foreach($cart_items as $item): ?>
                 <tr>
                     <td><?= $line += 1 ?></td>
-                    <td><?= $item['product_name'] ?></td>
+                    <td><img class="cart-img" src="<?= base_url()?>/assets/images/stores/products/placeholders.png" alt="photo"><?= $item['product_name'] ?></td>
                     <td><?= $item['item_price'] ?></td>
-                    <td><?= $item['quantity'] ?></td>
-                    <td><?= $item['line_price'] ?></td>
+                    <td><input type="number" name="line_qty" value="<?= $item['quantity'] ?>"></td>
+                    <td class="num"><?= $item['line_price'] ?></td>
                 </tr>
                 <?php 
                     $cost_price += $item['line_price'];
                 ?>
             <?php endforeach; ?>
+            
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>Total cost</td>
-                <td><?= $cost_price ?></td>
+                <td><b>Total cost</b></td>
+                <td class="num"><b><?= $cost_price ?></b></td>
             </tr>
             <tr>
                 <td colspan="5">
-                <div class="form">
+                <form class="form" action="/products/update" method="post">
+                    <input type="hidden" name="update_cart">
+                    <button class="btn btn-success" style="float: right;" type="submit" disabled>Update Cart</button>
+                </form>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5">
+               
+                <form class="form" action="/products/checkout" method="post">
                     <input type="hidden" name="checkout">
                     <button class="btn btn-success" style="float: right;" type="submit">Proceed To Checkout</button>
-                </div>
+                </form>
                 </td>
             </tr>
             </tbody>
