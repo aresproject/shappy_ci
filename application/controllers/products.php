@@ -6,6 +6,7 @@ class Products extends CI_Controller {
         parent::__construct();
         $this->load->model('products_model');
         $this->load->helper('url_helper');
+        $this->output->enable_profiler(TRUE);
     }
 
     public function search(){  
@@ -38,7 +39,6 @@ class Products extends CI_Controller {
                     ->view('header/main_nav')
                     ->view('features/product_search')
                     ->view('search', $view_data)
-                    ->view('footer/admin_helper')
                     ->view('footer/footer');
             //unset($_POST['product_search']);
         
@@ -57,7 +57,6 @@ class Products extends CI_Controller {
                        ->view('header/main_nav')
                        ->view('features/product_search')
                        ->view('content/product_view', $view_data)
-                       ->view('footer/admin_helper')
                        ->view('footer/footer');
     }
 
@@ -77,48 +76,27 @@ class Products extends CI_Controller {
                        ->view('header/main_nav')
                        ->view('features/product_search')
                        ->view('content/cart_items', $view_data)
-                       ->view('footer/admin_helper')
                        ->view('footer/footer');
     }
 
     public function checkout() {
         //First Check if the user selected a payment method from checkout Page
-        switch($this->input->get('checkout')) {
-            case 'credit':
-                $pay_mode = "credit_card";
-                $this->products_model->checkout($pay_mode);
-                redirect('/main/shop');
-                break;
-            case 'debit':
-                $pay_mode = "debit_card";
-                $this->products_model->checkout($pay_mode);
-                redirect('/main/shop');
-                break;
-            case 'bank':
-                $pay_mode = "bank";
-                $this->products_model->checkout($pay_mode);
-                redirect('/main/shop');
-                break;
-            case 'cod':
-                $pay_mode = "cod";
-                $this->products_model->checkout($pay_mode);
-                redirect('/main/shop');
-                break;
-            default:
+        if(!is_null($this->input->get('checkout'))){
+            $this->products_model->checkout($this->input->get('checkout'));
+            redirect('/main/shop');
+        } else {
                 //Otherwise Display the details of an Order on Cart
-                $view_formats['page_title'] = "Checkout";
-                $view_data['cart_items'] = $this->products_model->get_cart();
-            
-                $this->load->model('users_model');
-                $view_data['user_data'] = $this->users_model->get_user_data("id = {$_SESSION['logged_userid']}");
-                $view_data['address_data'] = $this->users_model->get_user_address($_SESSION['logged_userid']);
-            
-                $this->load->view('header/header',$view_formats)
-                            ->view('header/main_nav')
-                            ->view('checkout', $view_data)
-                            ->view('footer/admin_helper')
-                            ->view('footer/footer');
-            break;
+            $view_formats['page_title'] = "Checkout";
+            $view_data['cart_items'] = $this->products_model->get_cart();
+        
+            $this->load->model('users_model');
+            $view_data['user_data'] = $this->users_model->get_user_data("id = {$_SESSION['logged_userid']}");
+            $view_data['address_data'] = $this->users_model->get_user_address($_SESSION['logged_userid']);
+        
+            $this->load->view('header/header',$view_formats)
+                        ->view('header/main_nav')
+                        ->view('checkout', $view_data)
+                        ->view('footer/footer');
         }
         
         

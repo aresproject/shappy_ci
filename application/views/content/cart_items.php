@@ -24,6 +24,7 @@
                 </tr>
                 <?php 
                     $cost_price += $item['line_price'];
+                    $_SESSION['total_price'] = $cost_price;
                 ?>
             <?php endforeach; ?>
             

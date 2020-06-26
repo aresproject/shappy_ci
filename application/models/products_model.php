@@ -194,16 +194,16 @@ Class Products_model extends CI_Model {
         );
         
         $this->db->trans_start();
-            $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_user_id']));
+            $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_userid']));
             $x = $this->db->last_query();
             
             //Tag the Order ID as Finishing The 'On Cart' Status
-            $this->db->update('order_status', $orders_status_old, array('order_id' => 
+            $this->db->update('order_status', $order_status_old, array('order_id' => 
             $_SESSION['active_cart'], 'status_name' => 'ON CART'));
             $x = $this->db->last_query();
             
             //Tag the Order ID as having the On Processing Status
-            $this->db->insert('orders_status', $orders_status_new);
+            $this->db->insert('order_status', $order_status_new);
             $x = $this->db->last_query();
         $this->db->trans_complete();
 

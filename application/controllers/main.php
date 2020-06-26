@@ -4,15 +4,12 @@ Class Main extends CI_Controller {
 
     public function __construct() {
         parent::__construct();
-
-        header('Cache-Control: no-cache');
     }
 
     public function index(){
         $view_data['page_title'] = "Login/Register";
         $this->load->view('header/header', $view_data)
                    ->view('login')
-                   ->view('footer/admin_helper')
                    ->view('footer/footer');
     }
 
@@ -29,6 +26,7 @@ Class Main extends CI_Controller {
     }
 
     public function shop() {
+        
         $this->load->model('products_model');
         $view_formats['page_title'] = "Shopping Page";
 
@@ -63,7 +61,7 @@ Class Main extends CI_Controller {
                    ->view('shop', $view_data)
                    ->view('footer/admin_helper')
                    ->view('footer/footer');
-                   
+                   $this->output->enable_profiler(TRUE);
     }
 
     public function sign_up(){
@@ -83,7 +81,6 @@ Class Main extends CI_Controller {
             $view_data['page_title'] = "Login/Register";
             $this->load->view('header/header', $view_data)
                    ->view('login')
-                   ->view('footer/admin_helper')
                    ->view('footer/footer');
         }
     }
