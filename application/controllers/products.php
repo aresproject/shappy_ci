@@ -71,7 +71,13 @@ class Products extends CI_Controller {
 
     public function view_cart() {
         $view_formats['page_title'] = "VIEW CART";
-        $view_data['cart_items'] = $this->products_model->get_cart();
+        if(!is_null($_SESSION['active_cart'])) {
+            $view_data['cart_items'] = $this->products_model->get_cart();
+        } else {
+            $this->session->set_flashdata('notice', " <p class='text-warning aligncenter'>You don't have any items in your cart</p>");
+           
+            redirect("/main/shop");
+        }
         $this->load->view('header/header',$view_formats)
                        ->view('header/main_nav')
                        ->view('features/product_search')
@@ -101,6 +107,16 @@ class Products extends CI_Controller {
         
         
         
+    }
+
+    public function write_review(){
+        $view_formats['page_title'] = "Write A Review";
+        $view_data = null;
+
+        $this->load->view('header/header',$view_formats)
+        ->view('header/main_nav')
+        ->view('content/user_review', $view_data)
+        ->view('footer/footer');
     }
 
 

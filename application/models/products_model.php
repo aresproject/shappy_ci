@@ -168,7 +168,8 @@ Class Products_model extends CI_Model {
                 LEFT JOIN products AS e ON e.id = a.product_id";
 
         $query = $this->db->query($sql);
-        $x = $this->db->last_query();
+        //$x = $this->db->last_query();
+        
         return $query->result_array();
         
     }
@@ -195,25 +196,30 @@ Class Products_model extends CI_Model {
         
         $this->db->trans_start();
             $this->db->update('orders', $orders, array('id' => $_SESSION['active_cart'], 'user_id' => $_SESSION['logged_userid']));
-            $x = $this->db->last_query();
+            //$x = $this->db->last_query();
             
             //Tag the Order ID as Finishing The 'On Cart' Status
             $this->db->update('order_status', $order_status_old, array('order_id' => 
             $_SESSION['active_cart'], 'status_name' => 'ON CART'));
-            $x = $this->db->last_query();
+            //$x = $this->db->last_query();
             
             //Tag the Order ID as having the On Processing Status
             $this->db->insert('order_status', $order_status_new);
-            $x = $this->db->last_query();
+            //$x = $this->db->last_query();
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === FALSE){
             $this->session->set_flashdata('notice', "Transaction cannot be processed");
         } else {
             unset($_SESSION['active_cart']);
+            unset($_SESSION['total_price']);
         }
 
        
+    }
+
+    public function write_review() {
+
     }
 
 }

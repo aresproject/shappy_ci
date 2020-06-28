@@ -61,6 +61,8 @@
         </div>
         <div class="col-md-8 col-sm-12">
             <h2>Customer Reviews</h2>
+            
+            <a href="#" class="alignright" data-toggle="modal" data-target="#modal-review">Leave a review</a>
             <?php foreach($reviews as $review): ?>
                 <div class="row">
                     <div class="col-md-2">
@@ -74,6 +76,43 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+        <!-- USER REVIEW -->
+        <div class="modal fade" id="modal-review" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title aligncenter" id="myModalLabel">Review This Product</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="">
+            <div class="modal-body">
+               
+                    <label for="rating">How Would You Rate This Product?</label>
+                    <div class="form-group">
+                        <input type="number" name="rating" placeholder="">
+                    </div>
+
+                    <label for="">Review Title</label>
+                    <div class="form-group">
+                        <input type="text" name="review_title" placeholder="What can you say about this?">
+                    </div>
+
+                    <label for="">How would you describe this product?</label>
+                    <div class="form-group">
+                        <textarea name="review" id="" cols="90" rows="5" ></textarea>
+                    </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+            </form>
+            </div>
+        </div>
         </div>
     </div>
 </div>

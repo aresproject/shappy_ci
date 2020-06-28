@@ -1,5 +1,6 @@
 
 <article class="container">
+    <?= isset($_SESSION['notice']) ? $_SESSION['notice'] : "" ?>
     <nav>
         <?= isset($pager) ? $pager : ""; ?>
         <?= isset($pager_x) ? $pager_x : ""; ?>

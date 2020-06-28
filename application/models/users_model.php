@@ -84,7 +84,7 @@ Class Users_model extends CI_Model {
         $query = $this->db->query($sql);
         return $query->row_array(); 
     }
-
+ 
 }
 
 ?>

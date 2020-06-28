@@ -10,3 +10,8 @@ img.user-photo {width: 100%;}
 article {min-height: 512px;}
 td.num {text-align: right;}
 img.cart-img {width: 25% !important; margin-right: 25px !important;}
+.alignright {text-align: right;}
+.aligncenter {text-align: center;}
+.alignleft {text-align: left;}
+
+#modal-review .modal-body input {width: 54%;}
