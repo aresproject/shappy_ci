@@ -7,6 +7,11 @@ class Products extends CI_Controller {
         $this->load->model('products_model');
         $this->load->helper('url_helper');
         $this->output->enable_profiler(TRUE);
+
+        if ( ! $this->session->userdata('logged_email'))
+        { 
+            redirect('/main');
+        }
     }
 
     public function search(){  
@@ -15,25 +20,27 @@ class Products extends CI_Controller {
         }
         $query = $this->db->get_where('products', "product_name LIKE '{$_SESSION['search_item']}%'");
         $view_formats['page_title'] = "Search Results";
-        $xconfig['base_url'] = base_url('/products/search/');
-        //$xconfig['total_rows'] = $this->db->count_all("products");
-        $xconfig['total_rows'] = $query->num_rows();
-        $xconfig['per_page'] = 8;
-        $xconfig['uri_segment'] = 3;
-        $xconfig['first_link'] = false;
-        $xconfig['last_link'] = false;
-        $xconfig['full_tag_open'] = "<ul class='pagination'>"; 
-        $xconfig['full_tag_close'] = "</ul>"; 
-        $xconfig['cur_tag_open'] = "<li class='page-item'><span class='page-link'>";
-        $xconfig['cur_tag_close'] = "</span></li>";
-        $xconfig['num_tag_open'] = "<li class='page-item'>";
-        $xconfig['num_tag_close'] = "</li>";
-        $xconfig['attributes'] = array('class' => 'page-link'); //anchor tags
+        
+        $pagination_search = array (
+            'base_url' => base_url('/products/search/'),
+            'total_rows' => $query->num_rows(),
+            'per_page' => 8,
+            'uri_segment' => 3,
+            'first_link' => false,
+            'last_link' => false,
+            'full_tag_open' => "<ul class='pagination'>", 
+            'full_tag_close' => "</ul>", 
+            'cur_tag_open' => "<li class='page-item'><span class='page-link'>",
+            'cur_tag_close' => "</span></li>",
+            'num_tag_open' => "<li class='page-item'>",
+            'num_tag_close' => "</li>",
+            'attributes' => array('class' => 'page-link') //anchor tags
+        );
 
-        $this->pagination->initialize($xconfig);
+        $this->pagination->initialize($pagination_search);
         $page_grouper = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
        
-        $view_data['products'] = $this->products_model->search_products($xconfig['per_page'], $page_grouper, $_SESSION['search_item']);
+        $view_data['products'] = $this->products_model->search_products($pagination_search['per_page'], $page_grouper, $_SESSION['search_item']);
         $view_data['pager_x'] = $this->pagination->create_links();
         $this->load->view('header/header',$view_formats)
                     ->view('header/main_nav')

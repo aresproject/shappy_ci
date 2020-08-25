@@ -16,6 +16,7 @@ Class Users_model extends CI_Model {
             $this->session->set_userdata('logged_email', $row->email);
             $this->session->set_userdata('logged_fname', $row->first_name);
             $this->session->set_userdata('logged_userid', $row->id);
+            $this->session->set_userdata('store_id', $row->store_id);
             return true;
         } else {
             return false;

@@ -10,7 +10,7 @@
             <p><b>Filter by Categories</b></p>
             <ul>
             <?php foreach($filters as $category): ?>
-                <li><?= $category['category_name'] ?></li>
+                <li><a href="/main/shop/<?= $category['id']?>"><?= $category['category_name'] ?></a></li>
             <?php endforeach; ?>
             </ul>
         </div>
