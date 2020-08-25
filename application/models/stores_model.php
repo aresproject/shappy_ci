@@ -40,7 +40,7 @@ Class Stores_model extends CI_Model {
         where store_id = {$_SESSION['store_id']}";
 
         $query = $this->db->query($sql);
-        return $query->result();
+        return $query->result_array();
 
     }
 

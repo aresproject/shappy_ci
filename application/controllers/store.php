@@ -37,7 +37,7 @@ Class Store extends CI_Controller {
     }
 
     public function store_products() {
-        $items = $this->stores_model->get_store_products();
+        $items = $this->Stores_model->get_stores_products();
         $line = 1;
         foreach($items as $record) {
             echo "<tr>";
