@@ -40,12 +40,12 @@ Class Stores_model extends CI_Model {
         where store_id = {$_SESSION['store_id']}";
 
         $query = $this->db->query($sql);
-        return $query->result_array();
+        return $query->result();
 
     }
 
     public function delete_item($item_id){
-        $query="DELETE FROM `products` WHERE id=$item_id";
+    $query="DELETE FROM products WHERE id= {$item_id}";
 		$this->db->query($query);
     }
 

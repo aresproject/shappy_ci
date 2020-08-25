@@ -50,7 +50,7 @@
 <script>
 $(document).ready(function() {
 	$.ajax({
-		url: "<?php echo base_url("/store/store_products");?>",
+		url: "<?php echo base_url("/Store/store_products");?>",
 		type: "POST",
 		cache: false,
 		success: function(dataResult){

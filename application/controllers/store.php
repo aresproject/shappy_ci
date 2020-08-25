@@ -10,13 +10,14 @@ Class Store extends CI_Controller {
         { 
             redirect('/main');
         }
+
     }
 
     public function index(){
         $view_formats['page_title'] = "Store Page";
         $this->Stores_model->get_store_data();
         $view_data['orders'] = $this->Stores_model->get_pending_orders();
-        $view_data['products'] = $this->Stores_model->get_stores_products();
+        //$view_data['products'] = $this->Stores_model->get_stores_products();
         $this->load->view('header/header',$view_formats)
                     ->view('header/main_nav')
                     ->view('store', $view_data)
@@ -42,10 +43,12 @@ Class Store extends CI_Controller {
         foreach($items as $record) {
             echo "<tr>";
             echo "<td> {$line} </td>";
-            echo "<td> {$record['product_name']} </td>";
-            echo "<td> {$record['price']} </td>";
-            echo "<td> {$record['ratings']} </td>";
-            echo "<td> <button type='button' class='btn'>Edit</button> | <button  type='button' class='btn btn-danger delete' data-id='{$record['id']}'>Delete</button> </td>"; 
+            echo "<td> {$record->product_name} </td>";
+            echo "<td> {$record->price} </td>";
+            echo "<td> {$record->ratings} </td>";
+            echo "<td> <button type='button' class='btn'>Edit</button> | 
+                <button  type='button' class='btn btn-danger delete' 
+                data-id='{$record->id}'>Delete</button> </td>"; 
             echo "</tr>";
             $line++;
         }
