@@ -26,8 +26,13 @@ Class Store extends CI_Controller {
     }
 
     public function delete_item(){
-        $item_id = $this->input->post('id');
-		$this->Stores_model->delete_prod($item_id);	
+        $response_data = ['status' => false, 'result' => []];
+        $post_data = elements(array('item_id'), $this->input->post()); 
+
+		$response_data['status'] = $this->Stores_model->delete_prod($post_data['item_id']);	
+        $response_data['result'] =  $post_data;
+
+        echo json_encode($response_data);
     }
 
     public function remove_item(){
@@ -47,21 +52,26 @@ Class Store extends CI_Controller {
 
     public function store_products() {
         $items = $this->Stores_model->get_stores_products();
-        $line = 1;
-        foreach($items as $record) {
-            echo "<tr>";
-            echo "<td> {$line} </td>";
-            echo "<td> {$record->product_name} </td>";
-            echo "<td> {$record->price} </td>";
-            echo "<td> {$record->ratings} </td>";
-            echo "<td> <button type='button' class='btn btn-success btn-edit
-            ' data-id='{$record->id}' data-toggle='modal' data-target='#product_update'>
-            Edit</button> | 
-                <button  type='button' class='btn btn-danger btn-delete' 
-                data-id='{$record->id}'>Delete</button> </td>"; 
-            echo "</tr>";
-            $line++;
-        }
+        echo $this->load->view("partials/products/product_item.php", $items);
+        
+        // $line = 1;
+        // foreach($items as $record) {
+        //     echo "<tr>";
+        //         echo "<td> {$line} </td>";
+        //         echo "<td> {$record->product_name} </td>";
+        //         echo "<td> {$record->price} </td>";
+        //         echo "<td> {$record->ratings} </td>";
+        //         echo "<td> <button type='button' class='btn btn-success btn-edit' data-id='{$record->id}' data-toggle='modal' data-target='#product_update'>
+        //         Edit</button> | 
+        //             <form action='{$base_url("/store/delete_item")}' method='post'?>
+        //                 <input type='hidden' value='{$record->id}' name='item_id'>
+        //                 <button  type='button' class='btn btn-danger btn-delete' data-id='{$record->id}'>Delete</button> </td>
+        //             </form>    
+        //             "; 
+
+        //     echo "</tr>";
+        //     $line++;
+        // }
     }
 }
 
