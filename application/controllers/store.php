@@ -10,7 +10,6 @@ Class Store extends CI_Controller {
         { 
             redirect('/main');
         }
-
     }
 
     public function index(){
@@ -23,18 +22,27 @@ Class Store extends CI_Controller {
                     ->view('store', $view_data)
                     ->view('footer/footer');
         
-        $this->output->enable_profiler(TRUE);
+        //$this->output->enable_profiler(TRUE);
     }
 
     public function delete_item(){
-        if($this->input->post('type')==2)
-		{
-			$id=$this->input->post('id');
-			$this->stores_model->delete_item($id);	
-			echo json_encode(array(
-				"statusCode"=>200
-			));
-		} 
+        $item_id = $this->input->post('id');
+		$this->Stores_model->delete_prod($item_id);	
+    }
+
+    public function remove_item(){
+        $this->Stores_model->deactivate_item($id);	
+    }
+
+    public function fetch_product(){
+        if ($this->input->is_ajax_request()) {
+            $this->load->model('products_model');
+            $item_id = $this->input->post('id');
+
+            if ($view_data['product'] = $this->products_model->get_product($item_id)) {
+				$data = array('response' => 'success', 'post' => $view_data['product']);
+			}
+        }
     }
 
     public function store_products() {
@@ -46,8 +54,10 @@ Class Store extends CI_Controller {
             echo "<td> {$record->product_name} </td>";
             echo "<td> {$record->price} </td>";
             echo "<td> {$record->ratings} </td>";
-            echo "<td> <button type='button' class='btn'>Edit</button> | 
-                <button  type='button' class='btn btn-danger delete' 
+            echo "<td> <button type='button' class='btn btn-success btn-edit
+            ' data-id='{$record->id}' data-toggle='modal' data-target='#product_update'>
+            Edit</button> | 
+                <button  type='button' class='btn btn-danger btn-delete' 
                 data-id='{$record->id}'>Delete</button> </td>"; 
             echo "</tr>";
             $line++;

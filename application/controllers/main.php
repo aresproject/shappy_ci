@@ -19,13 +19,15 @@ Class Main extends CI_Controller {
             $this->Users_model->has_active_cart();
             if($_SESSION['store_id'] > 0) {
                 redirect('/store');
-            } else redirect('/main/shop');
-            
-        } else {
+            } 
+            else {
+                redirect('/main/shop');
+            }     
+        } 
+        else {
             $this->session->set_flashdata('login_notice', "Invalid email and password");
             redirect('/main');
         } 
-        
     }
 
     public function shop($category = null) {
@@ -38,9 +40,9 @@ Class Main extends CI_Controller {
         $this->load->model('products_model');
         $view_formats['page_title'] = "Shopping Page";
 
-        /* $pagination_main = array(
+        $pagination_main = array(
             'base_url' => base_url('/main/shop/'),
-            //'total_rows' => $this->db->count_all("products"),
+            'total_rows' => $this->db->count_all("products"),
             'per_page' => 8,
             'uri_segment' => 3,
             'first_link' => false,
@@ -52,30 +54,12 @@ Class Main extends CI_Controller {
             'num_tag_open' => "<li class='page-item'>",
             'num_tag_close' => "</li>",
             'attributes' => array('class' => 'page-link')
-        ); */
-        //$this->pagination->initialize($pagination_main);
+        ); 
+        $this->pagination->initialize($pagination_main);
 
-        $pagination_main["per_page"] = 8;
         $page_group = ($this->uri->segment(3)) ? $this->uri->segment(3) : 0;
         $view_data['products'] = $this->products_model->fetch_products($pagination_main["per_page"], $page_group, null, $category);
        
-        $pagination_main = array(
-            'base_url' => base_url('/main/shop/'),
-            'total_rows' => $_SESSION['value'],
-            'uri_segment' => 3,
-            'first_link' => false,
-            'last_link' => false,
-            'full_tag_open' => "<ul class='pagination'>", 
-            'full_tag_close' => "</ul>", 
-            'cur_tag_open' => "<li class='page-item'><span class='page-link'>",
-            'cur_tag_close' => "</span></li>",
-            'num_tag_open' => "<li class='page-item'>",
-            'num_tag_close' => "</li>",
-            'attributes' => array('class' => 'page-link')
-        );
-        //$pagination_main['total_rows'] = $_SESSION['value'];
-        $this->pagination->initialize($pagination_main);
-        
         $view_data['filters'] = $this->products_model->get_categories();
         $view_data['pager'] = $this->pagination->create_links();
         
@@ -117,6 +101,14 @@ Class Main extends CI_Controller {
         redirect('/main');
     }
 
+    public function test(){
+        $person = array(
+            "name" => "Alex",
+            "age" => 33
+        );
+        echo json_encode($person);
+    }
+        
 }
 
 ?>

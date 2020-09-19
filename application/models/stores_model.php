@@ -44,11 +44,15 @@ Class Stores_model extends CI_Model {
 
     }
 
-    public function delete_item($item_id){
+    public function delete_prod($item_id){
     $query="DELETE FROM products WHERE id= {$item_id}";
 		$this->db->query($query);
     }
 
+    public function deactivate_item($item_id){
+        $query="DELETE FROM products WHERE id= {$item_id}";
+            $this->db->query($query);
+        }
 
 }
 ?>

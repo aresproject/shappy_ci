@@ -15,6 +15,7 @@
                 <th>Price</th>
                 <th>Quantity</th>
                 <th>Line Price</th>
+                <th>Actions</th>
             </tr>
             <?php foreach($orders as $order_data): ?>
             <tr>
@@ -23,6 +24,7 @@
                 <td><?= $order_data['price']?></td>
                 <td><?= $order_data['quantity']?></td>
                 <td><?= $order_data['line_price']?></td>
+                <td><button class="btn btn-success">Mark For Delivery</button></td>
             </tr>
              <?php endforeach; ?>    
             </table>
@@ -45,37 +47,90 @@
             </table>
         </div>
     </div>
+    
 </article>
 
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="product_update" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Product Update</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" id="update_form">
+            <input type="hidden" id="modal_id">
+            <div class="form-group">
+                <label for="">Product Name</label>
+                <input type="text" class="form-control" id="product_name">
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+                <textarea name="product_description" id="product_description" cols="55" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="">Price</label>
+                <input type="number" class="form-control" id="product_price">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-$(document).ready(function() {
-	$.ajax({
-		url: "<?php echo base_url("/Store/store_products");?>",
-		type: "POST",
-		cache: false,
-		success: function(dataResult){
-			$('#datatable').html(dataResult); 
-		}
-	});
-	$(document).on("click", ".delete", function() { 
-	//alert("Success");
-		var $set = $(this).parent().parent();
-		$.ajax({
-			url: "<?php echo base_url("/store/delete_item");?>",
-			type: "POST",
-			cache: false,
-			data:{
-				type: 2,
-				id: $(this).attr("data-id")
-			},
-			success: function(dataResult){
-				alert(dataResult);
-				var dataResult = JSON.parse(dataResult);
-				if(dataResult.statusCode==200){
-					$set.fadeOut().remove();
-				}
-			}
-		});
-	});
+
+function fetchData(){
+    $.post("<?php echo base_url("/store/store_products");?>",
+        function(data){
+            $('#datatable').html(data); 
+        }
+    );
+}
+
+$(document).ready(function() {  
+    fetchData();
 });
+
+$(document).on('click', '.btn-delete', function(e){
+    e.preventDefault();
+    var $itemID = $(this).attr("data-id");
+    $.post("<?php echo base_url("/store/delete_item");?>", {
+        id: $itemID
+    },
+    function(data){
+        fetchData();
+    });
+});
+
+$(document).on('click', '.btn-edit', function(e){
+    e.preventDefault();
+    var $itemID = $(this).attr("data-id");
+    $.post("<?php echo base_url("/store/fetch_product");?>", {
+        id: $itemID
+    },
+    function(data){
+        $('#product_update').modal('show');
+        $("#product_name").val(data.post.id);
+        $("#product_description").val(data.post.name);
+        $("#product_price").val(data.post.email);
+    });
+});
+
+
 </script>
+    
+    
+
