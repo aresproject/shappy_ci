@@ -123,9 +123,9 @@ $(document).on('click', '.btn-edit', function(e){
     },
     function(data){
         $('#product_update').modal('show');
-        $("#product_name").val(data.post.id);
-        $("#product_description").val(data.post.name);
-        $("#product_price").val(data.post.email);
+        $("#product_name").val(data.post.product_name);
+        $("#product_description").val(data.post.description);
+        $("#product_price").val(data.post.price);
     });
 });
 
