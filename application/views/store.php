@@ -102,32 +102,36 @@ function fetchData(){
 
 $(document).ready(function() {  
     fetchData();
-});
 
-$(document).on('click', '.btn-delete', function(e){
-    e.preventDefault();
-    var $itemID = $(this).attr("data-id");
-    $.post("<?php echo base_url("/store/delete_item");?>", {
-        id: $itemID
-    },
-    function(data){
-        fetchData();
+    $(document).on('click', '.btn-delete', function(e){
+        $.post($(this).attr('action'), $(this).serialize(), function(data){
+            if(data.status){
+                $(this).parent().parent().parent().remove();
+            }
+        }, 'json');
+
+        return false;
+
+        //listeners click, keyup, change
+        //events, .hide(), .remove(), .html();
+    });
+
+    $(document).on('click', '.btn-edit', function(e){
+        e.preventDefault();
+        var $itemID = $(this).attr("data-id");
+        $.post("<?php echo base_url("/store/fetch_product");?>", {
+            id: $itemID
+        },
+        function(data){
+            $('#product_update').modal('show');
+            $("#product_name").val(data.post.id);
+            $("#product_description").val(data.post.name);
+            $("#product_price").val(data.post.email);
+        });
     });
 });
 
-$(document).on('click', '.btn-edit', function(e){
-    e.preventDefault();
-    var $itemID = $(this).attr("data-id");
-    $.post("<?php echo base_url("/store/fetch_product");?>", {
-        id: $itemID
-    },
-    function(data){
-        $('#product_update').modal('show');
-        $("#product_name").val(data.post.product_name);
-        $("#product_description").val(data.post.description);
-        $("#product_price").val(data.post.price);
-    });
-});
+
 
 
 </script>
